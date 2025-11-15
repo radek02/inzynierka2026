@@ -1,0 +1,43 @@
+# --- General Python Files and Folders ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dylib
+.Python
+build/
+dist/
+venv/
+env/
+*.egg-info/
+
+# Tests
+.coverage
+.pytest_cache/
+
+# --- Environment Variables & Secrets ---
+.env
+
+# --- Development Environment Specific Files ---
+
+# PyCharm/IntelliJ
+# Directories
+.idea/
+# Files
+*.iml
+*.iws
+*.ipr
+# History/Local Storage (if .idea is ignored, these usually aren't needed)
+.localhistory/
+
+# VS Code
+# Settings and temporary files
+.vscode/
+*.code-workspace
+
+# --- OS Generated Files ---
+.DS_Store
+Thumbs.db
+
+# Docker data files
+qdrant_data/
