@@ -6,9 +6,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-# Load environment variables from .env file in project root
-env_path = Path(__file__).parent / ".env"
-load_dotenv(dotenv_path=env_path)
+# Load environment variables from .env file in ReccomendationService/
+load_dotenv()
 
 app = FastAPI(title="Example API")
 
@@ -40,7 +39,7 @@ async def read_item(item_id: int, q: str | None = None):
 
 
 if __name__ == "__main__":
-    host = os.getenv("COMMUNACTION_HOST", "localhost")
-    port = int(os.getenv("COMMUNACTION_PORT", "8000"))
+    host = os.getenv("FASTAPI_HOST", "localhostxd")
+    port = int(os.getenv("FASTAPI_PORT", "8000"))
 
     uvicorn.run(app, host=host, port=port)

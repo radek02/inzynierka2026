@@ -4,7 +4,7 @@
 # Load .env and run
 ```
 docker run -d --name postgres-db \
-  --env-file .env.example \
+  --env-file .env \
   -p 5432:5432 \
   my-postgres
 ```

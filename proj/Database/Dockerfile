@@ -1,8 +1,1 @@
 FROM postgres:16-alpine
-
-ARG POSTGRES_PORT=5432
-ENV POSTGRES_PORT=${POSTGRES_PORT}
-
-EXPOSE ${POSTGRES_PORT}
-
-VOLUME ["/var/lib/postgresql/data"]
