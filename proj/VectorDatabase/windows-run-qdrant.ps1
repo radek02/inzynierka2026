@@ -5,8 +5,12 @@ if (!(Test-Path $storagePath)) {
 
 docker build -t my-qdrant .
 
-docker stop qdrant -ErrorAction SilentlyContinue
-docker rm qdrant -ErrorAction SilentlyContinue
+try {
+    docker stop qdrant | Out-Null
+    docker rm qdrant | Out-Null
+}
+catch {
+}
 
 docker run -d `
     --name qdrant `
