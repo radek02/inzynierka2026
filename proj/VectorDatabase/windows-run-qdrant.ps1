@@ -11,12 +11,16 @@ try {
 }
 catch {
 }
+try {
+    docker run -d `
+        --name qdrant `
+        -p 6333:6333 `
+        -p 6334:6334 `
+        -v "$PWD\qdrant_data:/qdrant/storage" `
+        my-qdrant
 
-docker run -d `
-    --name qdrant `
-    -p 6333:6333 `
-    -p 6334:6334 `
-    -v "$PWD\qdrant_data:/qdrant/storage" `
-    my-qdrant
-
-Write-Host "Qdrant is running at http://localhost:6333"
+    Write-Host "Qdrant is running at http://localhost:6333"
+}
+catch {
+    Write-Host "Failed"
+}

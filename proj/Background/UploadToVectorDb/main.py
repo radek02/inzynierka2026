@@ -7,20 +7,21 @@ def main():
     vector_repository = QdrantRepository(url=settings.qdrant_url)
 
     print(f"Loading data from {settings.user_embeddings_path} and {settings.book_embeddings_path}...")
-    users_data, books_data = loader.load_data() 
+    users_data, books_data = loader.load_embeddings()
+    user_id_map, book_id_map = loader.load_id_maps()
 
     print("Initializing vector database collections...")
-    vector_repository.recreate_collections(dim=settings.collection_dim)
+    vector_repository.recreate_collection(dim=settings.collection_dim)
 
     print("Uploading books...")
-    vector_repository.upload_vectors("books", books_data, settings.batch_size)
+    vector_repository.upload_vectors("books", books_data, book_id_map, settings.batch_size)
 
     print("Uploading users...")
-    vector_repository.upload_vectors("users", users_data, settings.batch_size)
+    vector_repository.upload_vectors("users", users_data, user_id_map, settings.batch_size)
 
     print("Creating indexing...")
-    vector_repository.optimize("books")
-    vector_repository.optimize("users")
+    vector_repository.create_indexing("books")
+    vector_repository.create_indexing("users")
 
     print("Succeded")
 

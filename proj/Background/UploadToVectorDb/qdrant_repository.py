@@ -14,7 +14,7 @@ class QdrantRepository(IVectorRepository):
             yield iterable[i:i+size]
 
     def recreate_collection(self, dim: int):
-        my_hnsw_config = models.HnswConfigDiff(on_disk=False, payload_mmap_threshold=0)
+        my_hnsw_config = models.HnswConfigDiff(on_disk=False)
         my_optimizers_config = models.OptimizersConfigDiff(default_segment_number=1)
         my_vectors_params = models.VectorParams(size=dim, distance=models.Distance.DOT)
 
@@ -27,8 +27,18 @@ class QdrantRepository(IVectorRepository):
             )
             print(f"Recreated collection: {name}")
     
-    def upload_vectors(self, collection_name, data, batch_size):
-        return None
+    def upload_vectors(self, collection_name, data, id_map, batch_size):
+        for idx_batch in self._batch(range(len(data)), batch_size):
+            self.client.upsert(
+                collection_name=collection_name,
+            points=[
+                models.PointStruct(
+                    id=int(id_map[i]),
+                    vector=data[i]  
+                )
+                for i in idx_batch
+            ]
+            )
     
     def create_indexing(self, collection_name):
         self.client.update_collection(
