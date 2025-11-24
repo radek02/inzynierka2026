@@ -1,7 +1,7 @@
 from fastapi import Depends
 from .config import AppConfig,settings
 from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage
-from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService
+from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService, UserRecommendationOrchestrator
 
 def get_settings() -> AppConfig:
     return settings
@@ -17,3 +17,8 @@ def get_ranker() -> IRankerService:
 
 def get_reranker() -> IReRankerService:
     return ReRankerService()
+
+def get_user_recommendation_orchestrator(candidate_generator: ICandidateGeneratorService = Depends(get_candidate_generator),
+                                         ranker: IRankerService = Depends(get_ranker),
+                                         reranker: IReRankerService = Depends(get_reranker)):
+    return UserRecommendationOrchestrator(candidate_generator=candidate_generator, ranker=ranker, reranker=reranker)

@@ -34,7 +34,6 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
             with_vectors=True
         )
             
-
         return [
             GeneratedCandidate(
                 book_id=hit.id,            

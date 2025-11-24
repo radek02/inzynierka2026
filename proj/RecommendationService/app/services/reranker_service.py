@@ -1,4 +1,5 @@
 from .interfaces import IReRankerService
+from typing import List
 
 class ReRankerService(IReRankerService):
     def __init__(self):
