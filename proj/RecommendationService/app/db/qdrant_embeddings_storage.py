@@ -21,7 +21,7 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
         )
 
         if not result:
-            return ValueError(f"User {user_id} not found")
+            raise ValueError(f"User {user_id} not found")
 
         return result[0].vector
 
