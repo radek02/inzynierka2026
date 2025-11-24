@@ -2,7 +2,7 @@
 `pip install -r requirements.txt`
 
 # Run locally
-`python main` will expose endpoints at `localhost:8001`, view Swagger at `localhost:8001/docs`
+`python -m app.main` will expose endpoints at `localhost:8001`, view Swagger at `localhost:8001/docs`
 
 # Build Docker image
 ```

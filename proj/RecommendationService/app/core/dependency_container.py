@@ -1,5 +1,5 @@
 from fastapi import Depends
-from config import AppConfig,settings
+from .config import AppConfig,settings
 from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage
 
 def get_settings() -> AppConfig:

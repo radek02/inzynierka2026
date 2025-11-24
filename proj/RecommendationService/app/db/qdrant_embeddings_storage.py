@@ -1,4 +1,4 @@
-from interfaces import IEmbeddingsStorage
+from .interfaces import IEmbeddingsStorage
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from app.core import AppConfig
@@ -14,10 +14,12 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
         self.client = QdrantClient(url = url)
 
     def get_user_embeddings(self, user_id: int) -> List[float]:
-        result = self.client.retrive(
+        result = self.client.retrieve(
             collection_name=USER_COLLECTOION,
-            ids=[user_id]
+            ids=[user_id],
+            with_vectors=True
         )
+
         if not result:
             return ValueError(f"User {user_id} not found")
 
@@ -31,7 +33,7 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
             limit=amount,
             with_vectors=True
         )
-        
+            
 
         return [
             GeneratedCandidate(
@@ -39,7 +41,7 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
                 book_embeddings=hit.vector,
                 score=hit.score            
             )
-            for hit in search_results
+            for hit in search_results.points
         ]
 
 
