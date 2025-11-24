@@ -1,3 +1,4 @@
 from .interfaces import ICandidateGeneratorService, IRankerService, IReRankerService
 from .candidate_generator_service import CandidateGeneratorService
 from .ranker_service import RankerService 
+from .reranker_service import ReRankerService
