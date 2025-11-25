@@ -17,7 +17,7 @@ async def register_interaction(
     request: InteractionsRequest,
     interaction_repo: InteractionsRepository = Depends(get_interactions_repo),
     cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
-):
+) -> InteractionsResponse:
     try:
         success = interaction_repo.insert_new_interaction(
             request.user_id, request.book_id, request.rating

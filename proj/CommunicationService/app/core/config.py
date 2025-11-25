@@ -13,5 +13,7 @@ class AppConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
+    cache_ttl: int = 24 * 3600  # 24 hours
+
 
 settings = AppConfig()
