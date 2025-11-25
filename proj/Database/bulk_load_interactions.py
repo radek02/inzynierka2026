@@ -1,17 +1,12 @@
-"""
-Script to load 10% of user-book interactions from CSV file into PostgreSQL.
-Similar pattern to EDA.ipynb for loading books data.
-"""
+"""Script to load user-book interactions from CSV into PostgreSQL using COPY."""
 
 import os
 import sys
+import time
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
 import psycopg2
 from dotenv import load_dotenv
-from psycopg2.extras import execute_batch
 
 # Load environment variables
 load_dotenv()
@@ -58,15 +53,6 @@ def get_db_connection():
     )
 
 
-def load_interactions(file_path):
-    """Load interactions from a CSV and return a Pandas DataFrame."""
-    print(f"Loading interactions from: {file_path}")
-    df = pd.read_csv(file_path)
-    print(f"Loaded {len(df):,} interactions")
-
-    return df
-
-
 def create_schema(conn):
     """Create the database schema if it doesn't exist."""
     schema_file = Path(__file__).parent / "schema.sql"
@@ -78,67 +64,83 @@ def create_schema(conn):
         cur.execute(schema_sql)
 
     conn.commit()
-    print("Schema created successfully")
+    print("✓ Schema created successfully")
 
 
-def insert_interactions(conn, df):
+def bulk_load_with_copy(conn, csv_path):
     """
-    Insert interactions into the database using batch insert for efficiency.
+    Load CSV directly using COPY command.
 
     Parameters:
     - conn: PostgreSQL connection
-    - df: DataFrame with columns: user_id, book_id, rating
+    - csv_path: Path to CSV file with columns: user_id, book_id, rating
     """
-    # Show available columns for debugging
-    print(f"\nAvailable columns in data: {list(df.columns)}")
-    print(f"First row sample: {df.iloc[0].to_dict() if len(df) > 0 else 'No data'}")
-
-    # Validate required columns
-    required_columns = ["user_id", "book_id", "rating"]
-    missing_columns = [col for col in required_columns if col not in df.columns]
-
-    if missing_columns:
-        raise ValueError(
-            f"Missing required columns: {missing_columns}. Available columns: {list(df.columns)}"
-        )
-
-    # Clean data
-    df = df[required_columns].copy()
-    df = df.dropna()  # Remove rows with missing values
-
-    # Convert to appropriate types
-    # CSV already has numeric IDs
-    df["user_id"] = df["user_id"].astype(int)
-    df["book_id"] = df["book_id"].astype(int)
-    df["rating"] = df["rating"].astype(int)  # rating is an integer 0-5
-
-    print(f"\nPreparing to insert {len(df):,} interactions...")
-    print(f"User IDs range: {df['user_id'].min()} - {df['user_id'].max()}")
-    print(f"Book IDs range: {df['book_id'].min()} - {df['book_id'].max()}")
-    print(f"Rating statistics:\n{df['rating'].describe()}")
-
-    # Prepare data for insertion
-    records = df.to_records(index=False)
-    data = [(int(r.user_id), int(r.book_id), float(r.rating)) for r in records]
-
-    # Insert using batch for better performance
-    insert_query = """
-        INSERT INTO user_book_interactions (user_id, book_id, rating)
-        VALUES (%s, %s, %s)
-        ON CONFLICT (user_id, book_id) DO UPDATE
-        SET rating = EXCLUDED.rating,
-            created_at = CURRENT_TIMESTAMP;
-    """
+    print(f"\nLoading from: {csv_path}")
+    start_time = time.time()
 
     with conn.cursor() as cur:
-        execute_batch(cur, insert_query, data, page_size=1000)
+        # Step 1: Create temporary table without constraints (faster loading)
+        print("Creating temporary staging table...")
+        cur.execute("""
+            CREATE TEMP TABLE temp_interactions (
+                user_id INTEGER,
+                book_id INTEGER,
+                is_read SMALLINT,
+                rating SMALLINT,
+                is_reviewed SMALLINT
+            );
+        """)
 
-    conn.commit()
-    print(f"✓ Successfully inserted {len(df):,} interactions")
+        # Step 2: COPY data into temp table
+        print("Copying data from CSV (this is fast)...")
+        copy_start = time.time()
+
+        with open(csv_path, 'r') as f:
+            # Skip header row if present
+            next(f)
+
+            # Load all columns from CSV
+            cur.copy_expert(
+                "COPY temp_interactions (user_id, book_id, is_read, rating, is_reviewed) FROM STDIN WITH CSV",
+                f
+            )
+
+        copy_time = time.time() - copy_start
+
+        # Get count from temp table
+        cur.execute("SELECT COUNT(*) FROM temp_interactions")
+        temp_count = cur.fetchone()[0]
+        print(f"✓ Copied {temp_count:,} rows to staging table in {copy_time:.1f}s")
+
+        # Step 3: Insert from temp table to real table
+        # This preserves all schema constraints (SERIAL id, DEFAULT created_at, etc.)
+        print("Inserting into main table (preserving schema)...")
+        insert_start = time.time()
+
+        cur.execute("""
+            INSERT INTO user_book_interactions (user_id, book_id, rating)
+            SELECT user_id, book_id, rating
+            FROM temp_interactions
+            ON CONFLICT (user_id, book_id)
+            DO UPDATE SET
+                rating = EXCLUDED.rating,
+                created_at = CURRENT_TIMESTAMP;
+        """)
+
+        insert_time = time.time() - insert_start
+        rows_inserted = cur.rowcount
+
+        conn.commit()
+
+        total_time = time.time() - start_time
+
+        print(f"✓ Inserted {rows_inserted:,} interactions in {insert_time:.1f}s")
+        print(f"✓ Total time: {total_time:.1f}s")
+        print(f"  Average: {rows_inserted/total_time:,.0f} rows/second")
 
 
 def display_stats(conn):
-    """Display statistics about the inserted data."""
+    """Display statistics about the loaded data."""
     with conn.cursor() as cur:
         cur.execute("SELECT * FROM interaction_stats")
         stats = cur.fetchone()
@@ -167,14 +169,17 @@ def main():
 
     if not os.path.exists(file_path):
         print(f"Error: File not found: {file_path}")
+        print(f"Usage: python {sys.argv[0]} <path_to_csv>")
         sys.exit(1)
 
-    try:
-        df = load_interactions(file_path)
+    # Get file size for display
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
 
-        # Ask for confirmation before proceeding with database operations
+    try:
+        # Ask for confirmation before proceeding
         action_description = (
-            f"Load {len(df):,} interactions from {os.path.basename(file_path)}"
+            f"Bulk load interactions from {os.path.basename(file_path)} "
+            f"({file_size_mb:.1f} MB) using optimized COPY method"
         )
         if not confirm_db_action(action_description):
             print("\n✗ Operation cancelled by user")
@@ -186,21 +191,22 @@ def main():
         print("✓ Connected successfully")
 
         # Create schema
-        print("\nCreating schema...")
+        print("\nEnsuring schema exists...")
         create_schema(conn)
 
-        # Insert data
-        print("\nInserting interactions...")
-        insert_interactions(conn, df)
+        # Bulk load data using COPY
+        bulk_load_with_copy(conn, file_path)
 
         # Display statistics
         display_stats(conn)
 
         conn.close()
-        print("\nAll done!")
+        print("\n✓ All done!")
 
     except Exception as e:
-        print(f"\nError: {e}")
+        print(f"\n✗ Error: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 

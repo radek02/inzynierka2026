@@ -1,6 +1,6 @@
 [tool.mypy]
 # List the paths MyPy should check
-files = ["CommunicationService/"] # TODO: add all src 
+files = ["CommunicationService/", "Cache/cache_client.py"] # TODO: add all src 
 # Alternatively, use 'packages = ["your_package_name"]'
 
 strict = true

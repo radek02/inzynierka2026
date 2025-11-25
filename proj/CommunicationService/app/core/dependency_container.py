@@ -2,7 +2,7 @@ from collections.abc import Generator
 
 import psycopg2
 import psycopg2.extensions
-import redis
+from Cache.cache_client import CacheClient
 from fastapi import Depends
 
 from app.core.config import AppConfig, settings
@@ -27,14 +27,9 @@ def get_db() -> Generator[psycopg2.extensions.connection, None, None]:
         conn.close()
 
 
-def get_cache() -> Generator[redis.Redis[str], None, None]:
-    """Dependency for Redis cache"""
-    client = redis.Redis(
-        host=settings.redis_host,
-        port=settings.redis_port,
-        db=settings.redis_db,
-        decode_responses=True,
-    )
+def get_cache() -> Generator[CacheClient, None, None]:
+    """Dependency for cache"""
+    client = CacheClient()
     try:
         yield client
     finally:

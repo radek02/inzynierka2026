@@ -1,3 +1,4 @@
+from Cache.cache_client import CacheClient
 from fastapi import Depends
 
 from app.core import get_cache, get_db, settings

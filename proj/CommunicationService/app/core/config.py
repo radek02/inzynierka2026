@@ -9,12 +9,6 @@ class AppConfig(BaseSettings):
     postgres_user: str = "postgres"
     postgres_password: str = "postgres"
 
-    # Redis
-    redis_host: str = "localhost"
-    redis_port: int = 6379
-    redis_db: int = 0
-    cache_ttl: int = 3600
-
     # FastAPI
     fastapi_host: str = "0.0.0.0"
     fastapi_port: int = 8000

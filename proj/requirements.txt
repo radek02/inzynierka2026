@@ -1,0 +1,7 @@
+# Combined requirements for all modules in proj/
+# This allows using a single virtual environment for the entire project
+
+# Include module-specific requirements
+-r Database/requirements.txt
+-r CommunicationService/requirements.txt
+-r RecommendationService/requirements.txt
