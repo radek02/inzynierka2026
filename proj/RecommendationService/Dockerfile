@@ -1,10 +1,15 @@
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Install build dependencies, install packages, then clean up
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc build-essential && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get purge -y --auto-remove gcc build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
