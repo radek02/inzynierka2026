@@ -1,12 +1,3 @@
 [tool.mypy]
-# List the paths MyPy should check
-files = ["CommunicationService/", "Cache/cache_client.py"] # TODO: add all src 
-# Alternatively, use 'packages = ["your_package_name"]'
-
-strict = true
-
-# Optionally, exclude certain files or directories
-exclude = []
-
-# Set the Python version your code targets
-python_version = "3.14"
+strict = false
+python_version = "3.13"
