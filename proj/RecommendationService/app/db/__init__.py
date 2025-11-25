@@ -1,0 +1,2 @@
+from .interfaces import IEmbeddingsStorage
+from .qdrant_embeddings_storage import QdrantEmbeddingsStorage
