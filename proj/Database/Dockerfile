@@ -1,4 +1,4 @@
-FROM postgres:15-alpine
+FROM postgres:16-alpine
 
 # Copy schema to be executed on container startup
 COPY schema.sql /docker-entrypoint-initdb.d/

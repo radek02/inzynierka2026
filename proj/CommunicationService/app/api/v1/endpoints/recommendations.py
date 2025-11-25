@@ -1,4 +1,4 @@
-from app.api.dependencies import get_cache_repo
+from app.api.dependencies import get_cache_repo, get_recommendation_client
 from app.db import CacheRecommendationRepository
 from app.models import Book, RecommendationsResponse
 from app.services import RecommendationServiceClient
@@ -11,6 +11,7 @@ router = APIRouter()
 async def get_recommendations(
     user_id: int,
     cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
+    client: RecommendationServiceClient = Depends(get_recommendation_client),
 ) -> RecommendationsResponse:
     # Check cache first
     cached = cache_repo.try_get_user_recommendation(user_id)
@@ -21,7 +22,6 @@ async def get_recommendations(
 
     # Call RecommendationService
     try:
-        client = RecommendationServiceClient()
         book_ids = client.get_user_recommendations(user_id)
 
         # Convert book IDs to Book objects
