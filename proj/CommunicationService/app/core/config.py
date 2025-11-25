@@ -1,23 +1,17 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppConfig(BaseSettings):
-    # Database
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "interactions"
     postgres_user: str = "postgres"
     postgres_password: str = "postgres"
-
-    # FastAPI
     fastapi_host: str = "0.0.0.0"
     fastapi_port: int = 8000
-
-    # Recommender Service (for future)
     recommender_service_url: str = "http://localhost:8001"
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 settings = AppConfig()
