@@ -1,0 +1,3 @@
+-r ALS/requirements.txt
+-r ContentBased/requirements.txt
+-r analysis/requirements.txt

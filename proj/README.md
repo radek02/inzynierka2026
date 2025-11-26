@@ -121,3 +121,10 @@ Or install the specific module's requirements:
 ```bash
 pip install -r Database/requirements.txt
 ```
+
+## Manually load embedings (temporary solution)
+ 
+1. ALS   MatrixFactorization.py (adjust path)
+2. run Qdrant container
+3. set env in Background/
+4. run main in Background/UploadToVectorDb/
