@@ -1,6 +1,7 @@
-from app.api.dependencies import get_cache_repo
+from app.api.dependencies import get_cache_repo, get_recommendation_client
 from app.db import CacheRecommendationRepository
 from app.models import Book, RecommendationsResponse
+from app.services import RecommendationServiceClient
 from fastapi import APIRouter, Depends, HTTPException
 
 router = APIRouter()
@@ -10,12 +11,30 @@ router = APIRouter()
 async def get_recommendations(
     user_id: int,
     cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
-):
+    client: RecommendationServiceClient = Depends(get_recommendation_client),
+) -> RecommendationsResponse:
+    # Check cache first
     cached = cache_repo.try_get_user_recommendation(user_id)
-
     if cached:
-        return RecommendationsResponse(cached)
+        return RecommendationsResponse(
+            user_id=user_id, recommendations=cached, source="cache"
+        )
 
-    # TODO: Call Recommender Module when implemented
-    # For now return empty
-    return RecommendationsResponse([])
+    # Call RecommendationService
+    try:
+        book_ids = client.get_user_recommendations(user_id)
+
+        # Convert book IDs to Book objects
+        recommendations = [Book(book_id=book_id) for book_id in book_ids]
+
+        # Cache the results
+        cache_repo.set_user_recommendation(user_id, recommendations)
+
+        return RecommendationsResponse(
+            user_id=user_id, recommendations=recommendations, source="computed"
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get recommendations: {str(e)}"
+        )

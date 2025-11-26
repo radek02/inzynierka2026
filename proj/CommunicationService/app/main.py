@@ -10,7 +10,7 @@ from app.core import settings
 
 app = FastAPI(
     title="Book Recommendation Communication Service",
-    description="Service Module from lab2 specification",
+    description="part of book recommendation system",
     version="1.0.0",
 )
 
@@ -21,7 +21,7 @@ app.include_router(similar_router, prefix="/api/v1", tags=["Similar Books"])
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> dict[str, str]:
     return {"status": "healthy"}
 
 

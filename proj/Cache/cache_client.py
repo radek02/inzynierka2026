@@ -4,7 +4,7 @@ Simple Redis client for CommunicationService
 
 import os
 from typing import Optional, cast
-    
+
 import redis
 from dotenv import load_dotenv
 
@@ -42,7 +42,7 @@ class CacheClient:
     def delete(self, key: str) -> bool:
         """Delete a cache value"""
         try:
-            return cast(bool, self.client.delete(key) > 0)
+            return cast(int, self.client.delete(key)) > 0
         except Exception:
             return False
 
