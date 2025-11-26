@@ -52,7 +52,7 @@ The database contains:
 See `schema.sql` for full schema definition.
 
 ## Loading Data
-
+This chapter is required to first database initialization which should be to load data into a database.
 ### Install Python dependencies
 ```bash
 cd Database
