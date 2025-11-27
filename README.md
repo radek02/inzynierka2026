@@ -30,7 +30,7 @@ W przypadku korzystania z plików innych niż `*_example*` należy dostosować a
 ### 3. Uruchomienie
 
 **a) collaborative filtering:**
-- `python Models/ALS/test_recommendations.py --user_id=2`
+- `python Models/ALS/test_recommendations.py --user_id=1`
 
 **b) content-based filtering:**
 - `python Models/ContentBased/test_similar_books.py --book_id=18628480`
@@ -63,7 +63,7 @@ Podobieństwo między książkami obliczamy za pomocą cosine similarity między
 Na ten milestone dostarczamy częściowo rozłączny system, składający się z modułów: CommunicationService, RecommendationService, Background, Database, Vector Database oraz modułów rekomendacyjnych.
 System można uruchomić używając docker compose, jednak na tym etapie nie będzie to działało od razu, ponieważ w tym momencie nie istnieje pipeline tworzenia embeddings → zapisywania ich do wektorowej bazy danych.
 
-Część funkcjonalności nie jest jeszcze zintegrowana z aplikacją główną: 
+Część funkcjonalności nie jest jeszcze zintegrowana z serwisem API: 
 1. Content-based (algorytm jest zdefiniowany, jednak nie jest w tym momencie dodany do samego serwisu; po dodaniu będzie użyty dla funkcjonalności „podaj podobne książki”).
 2. Odświeżanie embeddings użytkownika po nowej interakcji wymaga pełnej integracji modeli ALS z serwisem.
 3. System nie jest w tym momencie zintegrowany z cachem
@@ -71,7 +71,7 @@ Część funkcjonalności nie jest jeszcze zintegrowana z aplikacją główną:
 
 
 # Komentarz w sprawie wyboru ALS
-Dla głównego modelu rekomendacyjnego stosujemy nowoczesną architekturę systemów rekomendacyjnych: Candidate Generation → Ranking → Re-ranking.
+Dla głównego modelu rekomendacyjnego stosujemy nowoczesną architekturę systemów rekomendacyjnych: `Candidate Generation → Ranking → Re-ranking`.
 Faktoryzację macierzy metodą ALS stosujemy, aby znaleźć embeddings użytkowników i książek (które są wymagane na etapie candidate generation oraz ranking).
 Używanie faktoryzacji macierzy jest dominującym podejściem w branży (szczególnie w przypadku ograniczonych zasobów obliczeniowych).
-Wybór ALS został dokonany ze względu na to, że takie podejście jest bardzo efektywne pod względem kosztów obliczeniowych i ma bardzo dobrą zbieżność. Badania wykazują również, że ALS działa lepiej niż inne techniki faktoryzacji w przypadku większych zbiorów danych (>100000 aktywnych użytkowników).
+Wybór ALS został dokonany ze względu na to, że takie podejście jest bardzo efektywne pod względem kosztów obliczeniowych i ma bardzo dobrą zbieżność. Badania wykazują również, że ALS działa lepiej niż inne techniki faktoryzacji w przypadku większych zbiorów danych (`>100000` aktywnych użytkowników).
