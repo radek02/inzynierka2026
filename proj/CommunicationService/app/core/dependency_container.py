@@ -2,10 +2,9 @@ from collections.abc import Generator
 
 import psycopg2
 import psycopg2.extensions
-from Cache.cache_client import CacheClient
-from fastapi import Depends
 
 from app.core.config import AppConfig, settings
+from app.services import CacheClient
 
 
 def get_settings() -> AppConfig:

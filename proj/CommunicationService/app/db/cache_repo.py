@@ -1,7 +1,7 @@
 import json
 
-from Cache.cache_client import CacheClient
 from app.models import Book
+from app.services import CacheClient
 
 
 class CacheRecommendationRepository:

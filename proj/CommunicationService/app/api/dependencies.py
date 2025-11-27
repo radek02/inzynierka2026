@@ -1,11 +1,10 @@
 import psycopg2
 import psycopg2.extensions
-from Cache.cache_client import CacheClient
 from fastapi import Depends
 
 from app.core import get_cache, get_db, settings
 from app.db import CacheRecommendationRepository, InteractionsRepository
-from app.services import RecommendationServiceClient
+from app.services import CacheClient, RecommendationServiceClient
 
 
 def get_interactions_repo(

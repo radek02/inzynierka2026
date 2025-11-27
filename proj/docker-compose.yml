@@ -66,9 +66,7 @@ services:
         condition: service_healthy
 
   communication-service:
-    build:
-      context: .
-      dockerfile: ./CommunicationService/Dockerfile
+    build: ./CommunicationService
     container_name: communication-service
     ports:
       - "8000:8000"
