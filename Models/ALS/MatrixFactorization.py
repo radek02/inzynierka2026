@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 
@@ -6,15 +7,18 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
 
-interactions_file = "../../../data/goodreads_interactions.csv"
+parser = argparse.ArgumentParser()
+parser.add_argument("--input_file", required=True, help="Path to goodreads_interactions.csv")
+args = parser.parse_args()
+
 embedding_dim = 32
-saving_directory = "embeddings/full2"
+saving_directory = "Models/embeddings/full2"
 
 logging.basicConfig(level=logging.INFO)
 
 # Load dataset
-print("Loading CSV...")
-df = pd.read_csv(interactions_file)
+print(f"Loading {args.input_file}...")
+df = pd.read_csv(args.input_file)
 
 # this will numerate users and items from 0 to N-1, we actually have this kind of numeration, but it still could be
 # useful in case we delete some users or items from interaction, after interactions cleaning. This helps to build
