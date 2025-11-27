@@ -88,7 +88,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      recommendation-service:
+      recommendation-service: 
         condition: service_started
 
 volumes:

@@ -38,7 +38,7 @@ If you add new dependencies to a specific module:
 pip install -r Database/requirements.txt
 ```
 
-## Manually load embedings (temporary solution)
+## Manually load embeddings (temporary solution)
  
 1. ALS   MatrixFactorization.py (adjust path)
 2. run Qdrant container

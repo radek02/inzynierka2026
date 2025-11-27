@@ -15,7 +15,7 @@ powershell -ExecutionPolicy Bypass -File .\windows-run-qdrant.ps1
 
 ## To run qdrant for Mac call:
 ```
-TODO
+mac-run-qdrant.sh
 ```
 ## Helthcheck
 To check helth, you can write in your browser:
