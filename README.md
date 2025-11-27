@@ -1,7 +1,7 @@
 # Architektura
 API udostępniające system rekomendacyjny jest napisane w Python FastAPI, znajduje się w folderze `proj/`. 
-Model korzystający z `collaborative filtering` znajduje się w `Models/ALS` i to na jego podstawie API zwraca rekomendacje. 
-Model korzystający z `content-based filtering` znajduje się w `Models/ContentBased`, na jego podstawie API zwraca podobne do danej książki.
+Model korzystający z `collaborative filtering` znajduje się w `Models/ALS` i to na jego podstawie API zwraca rekomendacje dla użytkownika. 
+Model korzystający z `content-based filtering` znajduje się w `Models/ContentBased`, na jego podstawie API będzie zwracać książki podobne do danej książki.
 
 # Testowe uruchomienie modeli
 
