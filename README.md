@@ -1,7 +1,7 @@
 # Architektura
 API udostępniające system rekomendacyjny jest napisane w Python FastAPI, znajduje się w folderze `proj/`. 
 Model korzystający z `collaborative filtering` znajduje się w `Models/ALS` i to na jego podstawie API zwraca rekomendacje. 
-Model korzystajacy z `content-based filtering` znajduje sie w `Models/ContentBased`, na jego podstawie API zwraca podobne do danej ksiązki.
+Model korzystający z `content-based filtering` znajduje się w `Models/ContentBased`, na jego podstawie API zwraca podobne do danej książki.
 
 # Testowe uruchomienie modeli
 
@@ -41,6 +41,24 @@ W przypadku korzystania z plików innych niż `*_example*` należy dostosować a
   - program będzie działał, ale nie zwróci żadnych rekomendacji, bo wymaga to dodatkowej konfiguracji/trenowania modelu (docelowo będzie to zautomatyzowane celem łatwego odtworzenia)
   - żeby zobaczyć dokumentację API w Swagger należy odwiedzić `http://localhost:8000/docs`, tam też można wysłać zapytania
 
+# Opis użytych algorytmów
+
+### Collaborative Filtering (ALS)
+
+Faktoryzacja macierzy rozkłada macierz interakcji użytkownik-książka na dwie mniejsze macierze: embeddingi użytkowników i embeddingi książek. Każdy użytkownik i każda książka są reprezentowane jako wektor o stałej długości (np. 32 wymiary).
+
+Algorytm ALS (Alternating Least Squares) uczy się tych wektorów tak, aby iloczyn skalarny wektora użytkownika i wektora książki przybliżał ocenę, jaką użytkownik wystawił książce. Rekomendacje generujemy obliczając iloczyn skalarny wektora użytkownika ze wszystkimi wektorami książek i wybierając te z najwyższym wynikiem.
+
+### Content-Based Filtering (TF-IDF)
+
+TF-IDF (Term Frequency-Inverse Document Frequency) przekształca tekst w wektory liczbowe. Dla każdej książki tworzymy "dokument" składający się z tytułu, autorów i gatunków.
+
+- **TF** (Term Frequency) - jak często słowo występuje w danym dokumencie
+- **IDF** (Inverse Document Frequency) - jak rzadkie jest słowo w całym zbiorze (rzadsze słowa są ważniejsze)
+
+Podobieństwo między książkami obliczamy za pomocą cosine similarity między ich wektorami TF-IDF. Książki o podobnych tytułach, autorach i gatunkach będą miały wysokie podobieństwo.
+
+
 # Milestone 3
 Na ten milestone dostarczamy częściowo rozłączny system, składający się z modułów: CommunicationService, RecommendationService, Background, Database, Vector Database oraz modułów rekomendacyjnych.
 System można uruchomić używając docker compose, jednak na tym etapie nie będzie to działało od razu, ponieważ w tym momencie nie istnieje pipeline tworzenia embeddings → zapisywania ich do wektorowej bazy danych.
@@ -50,6 +68,7 @@ Część funkcjonalności nie jest jeszcze zintegrowana z aplikacją główną:
 2. Odświeżanie embeddings użytkownika po nowej interakcji wymaga pełnej integracji modeli ALS z serwisem.
 3. System nie jest w tym momencie zintegrowany z cachem
 4. Modele Ranking i Re-ranking są zamockowane
+
 
 # Komentarz w sprawie wyboru ALS
 Dla głównego modelu rekomendacyjnego stosujemy nowoczesną architekturę systemów rekomendacyjnych: Candidate Generation → Ranking → Re-ranking.
