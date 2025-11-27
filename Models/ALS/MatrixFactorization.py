@@ -8,11 +8,13 @@ import pandas as pd
 from scipy.sparse import coo_matrix
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input_file", required=True, help="Path to goodreads_interactions.csv")
+parser.add_argument(
+    "--input_file", required=True, help="Path to goodreads_interactions.csv"
+)
 args = parser.parse_args()
 
 embedding_dim = 32
-saving_directory = "Models/embeddings/full2"
+saving_directory = "Models/ALS/embeddings/full2"
 
 logging.basicConfig(level=logging.INFO)
 

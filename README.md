@@ -1,25 +1,54 @@
 # Architektura
-API udostępniające system rekomendacyjny jest napisane w Python FastAPI, znajduje się w folderze `proj/`. Model korzystający z `collaborative filetring` znajduje się w `Models/ALS` i to na jego podstawie API zwraca rekomendacje. 
+API udostępniające system rekomendacyjny jest napisane w Python FastAPI, znajduje się w folderze `proj/`. 
+Model korzystający z `collaborative filtering` znajduje się w `Models/ALS` i to na jego podstawie API zwraca rekomendacje. 
+Model korzystajacy z `content-based filtering` znajduje sie w `Models/ContentBased`, na jego podstawie API zwraca podobne do danej ksiązki.
 
-# Uruchomienie systemu w trybie "Development":
+# Testowe uruchomienie modeli
+
+Podane ścieżki w komendach zakładają uruchamianie z "korzenia" repozytorium.
+
+### 1. Dane
+
+Do wytrenowania modeli potrzebujemy danych, są dwie możliwości:
+- skorzystanie z istniejących `input_data/goodreads_interactions_example.csv` oraz `input_data/goodreads_books_example.json.gz` (zawierają po 1000 pierwszych linijek z oryginalnych plików),
+- pobranie oryginalnych plików:
+  - (~4GB) `curl -L --progress-bar -o goodreads_interactions.csv "https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/goodreads_interactions.csv"`
+  - (~2GB) `curl -L --progress-bar -o goodreads_books.json.gz "https://mcauleylab.ucsd.edu/public_datasets/gdrive/goodreads/goodreads_books.json.gz"`
+
+### 2. Wytrenowanie modeli
+
+W przypadku korzystania z plików innych niż `*_example*` należy dostosować argument `--input_file`.
+
+**a) collaborative filtering:**
+- `pip install -r Models/ALS/requirements.txt`
+- `python Models/ALS/MatrixFactorization.py --input_file input_data/goodreads_interactions_example.csv`
+
+**b) content-based filtering:**
+- `pip install -r Models/ContentBased/requirements.txt`
+- `python Models/ContentBased/train_tfidf.py --input_file input_data/goodreads_books_example.json.gz`
+
+### 3. Uruchomienie
+
+**a) collaborative filtering:**
+- `python Models/ALS/test_recommendations.py --user_id=2`
+
+**b) content-based filtering:**
+- `python Models/ContentBased/test_similar_books.py --book_id=18628480`
+
+# Testowe uruchomienie serwisu API:
 
 - w folderze `proj/` należy uruchomić `docker-compose up`
   - program będzie działał, ale nie zwróci żadnych rekomendacji, bo wymaga to dodatkowej konfiguracji/trenowania modelu (docelowo będzie to zautomatyzowane celem łatwego odtworzenia)
-  - żeby zobaczyć dokementację API w Swagger należy odwiedzić `http://localhost:8000/docs`, tam też można wysłać zapytania
+  - żeby zobaczyć dokumentację API w Swagger należy odwiedzić `http://localhost:8000/docs`, tam też można wysłać zapytania
 
 # Milestone 3
 Na ten milestone dostarczamy częściowo rozłączny system, składający się z modułów: CommunicationService, RecommendationService, Background, Database, Vector Database oraz modułów rekomendacyjnych.
 System można uruchomić używając docker compose, jednak na tym etapie nie będzie to działało od razu, ponieważ w tym momencie nie istnieje pipeline tworzenia embeddings → zapisywania ich do wektorowej bazy danych.
 
-Dla skutecznego uruchomienia systemu i próby wykorzystania w trybie testowym wymagane jest:
-1. Pobrać plik goodreads_interaction.csv ze strony Goodreads: https://cseweb.ucsd.edu/~jmcauley/datasets/goodreads.html
-2. Uruchomić skrypt MatrixFactorization.py znajdujący się w folderze Models/ALS (poprawiając ścieżki ustawione w tym skrypcie).
-3. Uruchomić skrypt UploadToVectorDb używając plików, które otrzymaliśmy w poprzednim kroku. Instrukcja uruchomienia jest podana w odpowiednim pliku README [Background](proj/Background/README.md)
-
-Część funkcjanalności nie jest jeszcze zintegrowane z aplikacją główną: 
+Część funkcjonalności nie jest jeszcze zintegrowana z aplikacją główną: 
 1. Content-based (algorytm jest zdefiniowany, jednak nie jest w tym momencie dodany do samego serwisu; po dodaniu będzie użyty dla funkcjonalności „podaj podobne książki”).
 2. Odświeżanie embeddings użytkownika po nowej interakcji wymaga pełnej integracji modeli ALS z serwisem.
-3. System nie jest w tym momęcie zintegrowany z cachem
+3. System nie jest w tym momencie zintegrowany z cachem
 4. Modele Ranking i Re-ranking są zamockowane
 
 # Komentarz w sprawie wyboru ALS

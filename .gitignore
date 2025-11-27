@@ -44,3 +44,5 @@ Thumbs.db
 qdrant_data/
 
 Models/ALS/embeddings/
+
+Models/ContentBased/output
