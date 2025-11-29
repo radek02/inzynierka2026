@@ -1,10 +1,11 @@
-from fastapi import Depends
+from fastapi import Depends, Request
 from .config import AppConfig,settings
 from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage, IInteractionsRepository, InteractionsRepository
 from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService, UserRecommendationOrchestrator
 import psycopg2
 from psycopg2.extensions import connection
 from collections.abc import Generator
+from app.ml_models import IMFModelService, ALSModelService
 
 
 def get_settings() -> AppConfig:
@@ -43,3 +44,6 @@ def get_db(config: AppConfig = Depends(get_settings)) -> Generator[connection, N
 
 def get_interactions_repository(db: connection = Depends(get_db)) -> IInteractionsRepository:
     return InteractionsRepository(db=db)
+
+def get_mf_model_service(request: Request) -> IMFModelService:
+    return request.app.state.mf_model_service

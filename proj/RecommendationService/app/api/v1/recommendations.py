@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.schemas import UserRecmmendationResponse
-from app.db import IEmbeddingsStorage
-from app.core.dependency_container import get_user_recommendation_orchestrator 
+from app.core.dependency_container import get_user_recommendation_orchestrator, get_interactions_repository
 from app.services import UserRecommendationOrchestrator
 
 recommendation_router = APIRouter()

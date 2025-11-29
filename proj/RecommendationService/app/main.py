@@ -2,8 +2,24 @@ import uvicorn
 from fastapi import FastAPI
 from app.core import settings
 from app.api.v1 import recommendations
+from app.ml_models import ALSModelService
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Recommendation Service")
+mf_model_service = ALSModelService(filepath=settings.mf_model_path)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Loading MF model")
+    mf_model_service.load_model()
+    app.state.mf_model_service = mf_model_service
+    print ("MF model loaded")
+    
+    yield
+
+    print("Shutting down... clearing MF model from memory.")
+    app.state.mf_model_service = None
+
+app = FastAPI(title="Recommendation Service", lifespan=lifespan)
 
 app.include_router(recommendations.recommendation_router, prefix="/api/v1/Recommendations", tags=["Recommendations"])
 

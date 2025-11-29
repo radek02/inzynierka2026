@@ -14,6 +14,8 @@ class AppConfig(BaseSettings):
     postgres_user: str = "postgres"
     postgres_password: str = "postgres"
 
+    mf_model_path: str = ""
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
