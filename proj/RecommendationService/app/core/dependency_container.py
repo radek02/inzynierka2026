@@ -1,7 +1,11 @@
 from fastapi import Depends
 from .config import AppConfig,settings
-from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage
+from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage, IInteractionsRepository, InteractionsRepository
 from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService, UserRecommendationOrchestrator
+import psycopg2
+from psycopg2.extensions import connection
+from collections.abc import Generator
+
 
 def get_settings() -> AppConfig:
     return settings
@@ -22,3 +26,20 @@ def get_user_recommendation_orchestrator(candidate_generator: ICandidateGenerato
                                          ranker: IRankerService = Depends(get_ranker),
                                          reranker: IReRankerService = Depends(get_reranker)):
     return UserRecommendationOrchestrator(candidate_generator=candidate_generator, ranker=ranker, reranker=reranker)
+
+def get_db(config: AppConfig = Depends(get_settings)) -> Generator[connection, None, None]:
+    """Dependency for database connection"""
+    connection = psycopg2.connect(
+        host=config.postgres_host,
+        port=config.postgres_port,
+        database=config.postgres_db,
+        user=config.postgres_user,
+        password=config.postgres_password,
+    )
+    try:
+        yield connection
+    finally:
+        connection.close()
+
+def get_interactions_repository(db: connection = Depends(get_db)) -> IInteractionsRepository:
+    return InteractionsRepository(db=db)

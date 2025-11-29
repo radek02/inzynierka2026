@@ -8,6 +8,12 @@ class AppConfig(BaseSettings):
     fastapi_port: int = 8080
     qdrant_url: str = "http://localhost:6333"
 
+    postgres_host: str = "localhost"
+    postgres_port: int = 5432
+    postgres_db: str = "interactions"
+    postgres_user: str = "postgres"
+    postgres_password: str = "postgres"
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 

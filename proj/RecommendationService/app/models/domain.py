@@ -5,3 +5,8 @@ class GeneratedCandidate(BaseModel):
     book_id: int
     book_embeddings: List[float]
     score: float
+
+class Interaction(BaseModel):
+    user_id: int
+    book_id: int
+    rating: int
