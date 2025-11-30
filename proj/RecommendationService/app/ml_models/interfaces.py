@@ -10,3 +10,8 @@ class IMFModelService(ABC):
     @abstractmethod
     def recompute_user_embeddings(self, interactions: List[Interaction]):
         pass
+
+class IModelLoader(ABC):
+    @abstractmethod
+    def load_mf_model(self):
+        pass

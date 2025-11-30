@@ -1,5 +1,5 @@
 pandas
 numpy
-scipy
-implicit
+scipy==1.16.3
+implicit==0.7.2
 pyarrow

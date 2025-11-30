@@ -2,10 +2,11 @@ import uvicorn
 from fastapi import FastAPI
 from app.core import settings
 from app.api.v1 import recommendations
-from app.ml_models import ALSModelService
 from contextlib import asynccontextmanager
+from app.core.dependency_container import init_mf_model_service, init_model_loader
+from app.ml_models import IMFModelService
 
-mf_model_service = ALSModelService(filepath=settings.mf_model_path)
+mf_model_service: IMFModelService = init_mf_model_service(model_loader=init_model_loader(settings))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
