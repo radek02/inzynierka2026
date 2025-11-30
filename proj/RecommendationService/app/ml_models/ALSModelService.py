@@ -18,4 +18,21 @@ class ALSModelService(IMFModelService):
             
 
     def recompute_user_embeddings(self, interactions: List[Interaction]) -> List[float]:
-        pass
+        if not self.model:
+            raise RuntimeError("Model is not loaded.")
+        
+        book_ids = [i.book_id for i in interactions]
+        ratings = [i.rating for i in interactions]
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      <--------------------------------------
+        # WRONG ID WRONG ID WRONG ID WRONG ID WRONG ID WRONG ID WRONG ID      <--------------------------------------
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      <--------------------------------------
+        max_item_id = self.model.item_factors.shape[0]
+
+        user_sparse = sparse.csr_matrix(
+            (ratings, ([0] * len(book_ids), book_ids)),
+            shape=(1, self.model.item_factors.shape[0]) 
+        ) 
+
+        new_vector = self.model.recalculate_user(0, user_sparse)
+
+        return new_vector
