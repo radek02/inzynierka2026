@@ -8,7 +8,7 @@ class IMFModelService(ABC):
         pass
 
     @abstractmethod
-    def recompute_user_embeddings(self, interactions: List[Interaction]):
+    def recompute_user_embeddings(self, interactions: List[Interaction]) -> List[float]:
         pass
 
 class IModelLoader(ABC):

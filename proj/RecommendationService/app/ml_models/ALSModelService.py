@@ -17,5 +17,5 @@ class ALSModelService(IMFModelService):
             print("MF model loaded successfully.")
             
 
-    def recompute_user_embeddings(self, interactions: List[Interaction]):
+    def recompute_user_embeddings(self, interactions: List[Interaction]) -> List[float]:
         pass
