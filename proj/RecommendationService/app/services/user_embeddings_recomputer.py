@@ -10,7 +10,7 @@ class UserEmbeddingsRecomputer:
 
     def recompute_user_embeddings(self, user_id: int):
         interactions = self.interactions_repository.get_user_interactions(user_id=user_id)
-        if interactions in None or len(interactions) == 0:
+        if interactions is None or len(interactions) == 0:
             raise Exception("User does not have any interactions")
         new_user_embeddings = self.mf_model_service.recompute_user_embeddings(interactions=interactions)
         self.embeddings_storage.update_user_embeddings(user_id=user_id, new_embeddings=new_user_embeddings)

@@ -2,7 +2,7 @@ from .interfaces import IEmbeddingsStorage
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from app.core import AppConfig
-from typing import List
+from typing import List, Dict
 from app.models import GeneratedCandidate
 
 USER_COLLECTOION = "users"
@@ -56,3 +56,13 @@ class QdrantEmbeddingsStorage(IEmbeddingsStorage):
                 )
             ],
         )
+
+    def get_mf_ids(self, collection_name: str, native_ids: List[int]) -> Dict[int, int]:        
+        points = self.client.retrieve(
+        collection_name=collection_name,
+        ids=native_ids,
+        with_payload=True,  
+        with_vectors=False 
+        )
+
+        return {point.id: point.payload.get("mf_id") for point in points}

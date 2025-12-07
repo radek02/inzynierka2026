@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List 
+from typing import List, Dict 
 from app.models import GeneratedCandidate, Interaction
 
 class IEmbeddingsStorage(ABC):
@@ -13,6 +13,10 @@ class IEmbeddingsStorage(ABC):
 
     @abstractmethod
     def update_user_embeddings(self, user_id: int, new_embeddings: List[float]):
+        pass
+    
+    @abstractmethod
+    def get_mf_ids(self, collection_name: str, native_ids: List[int]) -> Dict[int, int]:
         pass
 
 class IInteractionsRepository(ABC):
