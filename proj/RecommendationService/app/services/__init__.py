@@ -4,3 +4,4 @@ from .ranker_service import RankerService
 from .reranker_service import ReRankerService
 from .user_recommendation_orchestrator import UserRecommendationOrchestrator
 from .user_embeddings_recomputer import UserEmbeddingsRecomputer
+from .interactions_service import InteractionsService

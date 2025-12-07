@@ -1,7 +1,7 @@
 from fastapi import Depends, Request
 from .config import AppConfig,settings
 from app.db import IEmbeddingsStorage, QdrantEmbeddingsStorage, IInteractionsRepository, InteractionsRepository
-from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService, UserRecommendationOrchestrator, UserEmbeddingsRecomputer
+from app.services import ICandidateGeneratorService, CandidateGeneratorService, IRankerService, RankerService, IReRankerService, ReRankerService, UserRecommendationOrchestrator, UserEmbeddingsRecomputer, InteractionsService
 import psycopg2
 from psycopg2.extensions import connection
 from collections.abc import Generator
@@ -54,7 +54,10 @@ def init_mf_model_service(model_loader: IModelLoader) -> IMFModelService:
 def get_mf_model_service(request: Request) -> IMFModelService:
     return request.app.state.mf_model_service
 
+def get_interactions_service(embeddings_storage: IEmbeddingsStorage = Depends(get_embeddings_storage)) -> InteractionsService:
+    return InteractionsService(embeddings_repository=embeddings_storage)
+
 def get_user_embeddings_recomputer(embeddings_storage: IEmbeddingsStorage = Depends(get_embeddings_storage),
-                                   interactions_repository: IInteractionsRepository = Depends(get_interactions_repository),
+                                   interactions_service: InteractionsService = Depends(get_interactions_service),
                                    mf_model_service: IMFModelService = Depends(get_mf_model_service)) -> UserEmbeddingsRecomputer:
-    return UserEmbeddingsRecomputer(embeddings_storage=embeddings_storage, interactions_repository=interactions_repository, mf_model_service=mf_model_service)
+    return UserEmbeddingsRecomputer(embeddings_storage=embeddings_storage, interactions_service=interactions_service, mf_model_service=mf_model_service)

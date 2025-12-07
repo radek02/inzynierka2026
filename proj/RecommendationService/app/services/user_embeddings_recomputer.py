@@ -1,15 +1,16 @@
-from app.db import IEmbeddingsStorage, IInteractionsRepository
+from app.db import IEmbeddingsStorage
 from app.ml_models import IMFModelService
+from .interactions_service import InteractionsService
 
 class UserEmbeddingsRecomputer:
-    def __init__(self, embeddings_storage: IEmbeddingsStorage, interactions_repository: IInteractionsRepository,
+    def __init__(self, embeddings_storage: IEmbeddingsStorage, interaction_service: InteractionsService,
                  mf_model_service: IMFModelService):
         self.embeddings_storage = embeddings_storage
-        self.interactions_repository = interactions_repository
+        self.interaction_service = interaction_service
         self.mf_model_service = mf_model_service 
 
     def recompute_user_embeddings(self, user_id: int):
-        interactions = self.interactions_repository.get_user_interactions(user_id=user_id)
+        interactions = self.interaction_service.get_interactions_with_mf_id(user_id=user_id)
         if interactions is None or len(interactions) == 0:
             raise Exception("User does not have any interactions")
         new_user_embeddings = self.mf_model_service.recompute_user_embeddings(interactions=interactions)
