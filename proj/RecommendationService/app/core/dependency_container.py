@@ -54,8 +54,9 @@ def init_mf_model_service(model_loader: IModelLoader) -> IMFModelService:
 def get_mf_model_service(request: Request) -> IMFModelService:
     return request.app.state.mf_model_service
 
-def get_interactions_service(embeddings_storage: IEmbeddingsStorage = Depends(get_embeddings_storage)) -> InteractionsService:
-    return InteractionsService(embeddings_repository=embeddings_storage)
+def get_interactions_service(embeddings_storage: IEmbeddingsStorage = Depends(get_embeddings_storage), 
+                             interactions_repository: IInteractionsRepository = Depends(get_interactions_repository)) -> InteractionsService:
+    return InteractionsService(embeddings_repository=embeddings_storage, interactions_repository=interactions_repository)
 
 def get_user_embeddings_recomputer(embeddings_storage: IEmbeddingsStorage = Depends(get_embeddings_storage),
                                    interactions_service: InteractionsService = Depends(get_interactions_service),
