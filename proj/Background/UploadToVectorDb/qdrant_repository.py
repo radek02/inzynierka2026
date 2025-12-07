@@ -34,7 +34,8 @@ class QdrantRepository(IVectorRepository):
             points=[
                 models.PointStruct(
                     id=int(id_map[i]),
-                    vector=data[i]  
+                    vector=data[i],
+                    payload={ "mf_id": int(i) }
                 )
                 for i in idx_batch
             ]
