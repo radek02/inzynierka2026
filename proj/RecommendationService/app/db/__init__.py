@@ -1,2 +1,3 @@
-from .interfaces import IEmbeddingsStorage
+from .interfaces import IEmbeddingsStorage, IInteractionsRepository
 from .qdrant_embeddings_storage import QdrantEmbeddingsStorage
+from .interactions_repository import InteractionsRepository
