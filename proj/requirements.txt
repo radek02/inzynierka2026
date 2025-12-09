@@ -1,0 +1,3 @@
+-r CommunicationService/requirements.txt
+-r RecommendtionsService/requirements.txt
+-r Database/cloud_job/requirements.txt
