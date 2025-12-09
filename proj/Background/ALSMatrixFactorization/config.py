@@ -2,14 +2,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 class AppConfig(BaseSettings):
-    user_embeddings_path: str
-    book_embeddings_path: str
-    user_mapping_path: str
-    book_mapping_path: str
-
-    qdrant_url: str = "http://localhost:6333"
-    collection_dim: int = 32
-    batch_size: int = 10000
+    interactions_path: str
+    model_saving_dir: str
+    file_saving_dir: str
+    collection_dim: int
+    als_regularization: float
+    als_epochs: int
 
     model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
 
