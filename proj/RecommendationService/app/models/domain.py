@@ -10,4 +10,4 @@ class Interaction(BaseModel):
     user_id: int
     book_id: int
     rating: int
-    mf_id: int
+    mf_id: int | None

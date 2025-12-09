@@ -1,7 +1,11 @@
-from .interfaces import IInteractionsRepository
-from psycopg2.extensions import connection
 from typing import List
+
+from psycopg2.extensions import connection
+
 from app.models import Interaction
+
+from .interfaces import IInteractionsRepository
+
 
 class InteractionsRepository(IInteractionsRepository):
     def __init__(self, db: connection):
@@ -15,16 +19,16 @@ class InteractionsRepository(IInteractionsRepository):
         """
 
         interactions: List[Interaction] = []
-        with self.db.cursor() as cur:    
-            cur.execute(querry, (user_id,))   
+        with self.db.cursor() as cur:
+            cur.execute(querry, (user_id,))
             rows = cur.fetchall()
-            for row in rows:      
+            for row in rows:
                 user_id_val, book_id_val, rating_val = row
                 interaction = Interaction(
                     user_id=user_id_val,
                     book_id=book_id_val,
-                    rating=rating_val
-                )  
+                    rating=rating_val,
+                    mf_id=None,
+                )
                 interactions.append(interaction)
         return interactions
-    
