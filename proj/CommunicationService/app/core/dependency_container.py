@@ -44,4 +44,7 @@ def get_recommendation_client(
     config: AppConfig = Depends(get_settings),
 ) -> RecommendationServiceClient:
     """Dependency for recommendation service client"""
-    return RecommendationServiceClient(base_url=config.recommendation_service_url)
+    return RecommendationServiceClient(
+        base_url=config.recommendation_service_url,
+        timeout=config.recommendation_service_timeout,
+    )

@@ -12,7 +12,7 @@ async def get_recommendations(
     service: RecommendationService = Depends(get_recommendation_service),
 ) -> RecommendationsResponse:
     try:
-        recommendation = service.get_recommendations(user_id)
+        recommendation = service.get_recommendations(user_id=user_id)
         return RecommendationsResponse(recommendation=recommendation)
     except Exception as e:
         raise HTTPException(
