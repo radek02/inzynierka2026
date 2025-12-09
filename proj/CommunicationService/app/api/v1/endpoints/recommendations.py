@@ -1,4 +1,4 @@
-from app.api.dependencies import get_cache_repo, get_recommendation_client
+from app.api.dependencies import get_cache_repo, get_recommendation_service
 from app.db import CacheRecommendationRepository
 from app.models import Book, RecommendationsResponse
 from app.services import RecommendationService
@@ -18,7 +18,6 @@ async def get_recommendations(
         return RecommendationsResponse(
             user_id=user_id, recommendations=recommendations, source=source
         )
-
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to get recommendations: {str(e)}"

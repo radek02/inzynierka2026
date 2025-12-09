@@ -1,6 +1,6 @@
-from app.api.dependencies import get_cache_repo, get_interactions_repo
-from app.db import CacheRecommendationRepository, InteractionsRepository
+from app.api.dependencies import get_interactions_service
 from app.models import InteractionsRequest, InteractionsResponse
+from app.services import InteractionsService
 from fastapi import APIRouter, Depends, HTTPException, status
 
 router = APIRouter()
@@ -15,25 +15,18 @@ router = APIRouter()
 )
 async def register_interaction(
     request: InteractionsRequest,
-    interaction_repo: InteractionsRepository = Depends(get_interactions_repo),
-    cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
+    service: InteractionsService = Depends(get_interactions_service),
 ) -> InteractionsResponse:
-    try:
-        success = interaction_repo.insert_new_interaction(
-            request.user_id, request.book_id, request.rating
-        )
+    success = service.register_interaction(
+        user_id=request.user_id, book_id=request.book_id, rating=request.rating
+    )
 
-        if not success:
-            raise HTTPException(status_code=500, detail="Failed to insert")
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to register interaction")
 
-        # Invalidate cache
-        cache_repo.delete_user_recommendation(request.user_id)
-
-        return InteractionsResponse(
-            message="Interaction registered successfully",
-            user_id=request.user_id,
-            book_id=request.book_id,
-            rating=request.rating,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return InteractionsResponse(
+        message="Interaction registered successfully",
+        user_id=request.user_id,
+        book_id=request.book_id,
+        rating=request.rating,
+    )

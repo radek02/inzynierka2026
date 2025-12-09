@@ -4,7 +4,7 @@ from fastapi import Depends
 from app.core import get_cache, get_db, get_recommendation_client, get_settings
 from app.core.config import AppConfig
 from app.db import CacheRecommendationRepository, InteractionsRepository
-from app.services import CacheClient, RecommendationService, RecommendationServiceClient
+from app.services import CacheClient, InteractionsService, RecommendationService, RecommendationServiceClient
 
 
 def get_interactions_repo(
@@ -25,3 +25,10 @@ def get_recommendation_service(
     client: RecommendationServiceClient = Depends(get_recommendation_client),
 ) -> RecommendationService:
     return RecommendationService(cache_repo, client)
+
+
+def get_interactions_service(
+    interactions_repo: InteractionsRepository = Depends(get_interactions_repo),
+    cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
+) -> InteractionsService:
+    return InteractionsService(interactions_repo, cache_repo)

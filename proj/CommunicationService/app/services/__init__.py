@@ -1,5 +1,6 @@
 from .cache_client import CacheClient
-from .recommendation_service import RecommendationService
+from .interactions_service import InteractionsService
 from .recommendation_client import RecommendationServiceClient
+from .recommendation_service import RecommendationService
 
-__all__ = ["CacheClient", "RecommendationService", "RecommendationServiceClient"]
+__all__ = ["CacheClient", "InteractionsService", "RecommendationService", "RecommendationServiceClient"]
