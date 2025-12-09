@@ -17,16 +17,15 @@ async def register_interaction(
     request: InteractionsRequest,
     service: InteractionsService = Depends(get_interactions_service),
 ) -> InteractionsResponse:
-    success = service.register_interaction(
-        user_id=request.user_id, book_id=request.book_id, rating=request.rating
-    )
-
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to register interaction")
-
-    return InteractionsResponse(
-        message="Interaction registered successfully",
-        user_id=request.user_id,
-        book_id=request.book_id,
-        rating=request.rating,
-    )
+    try:
+        interaction = service.register_interaction(
+            user_id=request.user_id, book_id=request.book_id, rating=request.rating
+        )
+        return InteractionsResponse(
+            message="Interaction registered successfully",
+            interaction=interaction,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to register interaction: {str(e)}"
+        )
