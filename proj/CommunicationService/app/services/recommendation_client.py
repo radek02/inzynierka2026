@@ -2,22 +2,14 @@
 Client for calling RecommendationService
 """
 
-import os
-from typing import Optional
-
 import httpx
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class RecommendationServiceClient:
     """HTTP client for RecommendationService"""
 
-    def __init__(self, base_url: Optional[str] = None):
-        self.base_url = base_url or os.getenv(
-            "RECOMMENDATION_SERVICE_URL", "http://localhost:8080"
-        )
+    def __init__(self, base_url: str):
+        self.base_url = base_url
         self.timeout = 30.0
 
     def get_user_recommendations(self, user_id: int) -> list[int]:

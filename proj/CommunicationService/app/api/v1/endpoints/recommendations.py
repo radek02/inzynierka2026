@@ -1,7 +1,7 @@
 from app.api.dependencies import get_cache_repo, get_recommendation_client
 from app.db import CacheRecommendationRepository
 from app.models import Book, RecommendationsResponse
-from app.services import RecommendationServiceClient
+from app.services import RecommendationService
 from fastapi import APIRouter, Depends, HTTPException
 
 router = APIRouter()
@@ -11,27 +11,12 @@ router = APIRouter()
 async def get_recommendations(
     user_id: int,
     cache_repo: CacheRecommendationRepository = Depends(get_cache_repo),
-    client: RecommendationServiceClient = Depends(get_recommendation_client),
+    service: RecommendationService = Depends(get_recommendation_service),
 ) -> RecommendationsResponse:
-    # Check cache first
-    cached = cache_repo.try_get_user_recommendation(user_id)
-    if cached:
-        return RecommendationsResponse(
-            user_id=user_id, recommendations=cached, source="cache"
-        )
-
-    # Call RecommendationService
     try:
-        book_ids = client.get_user_recommendations(user_id)
-
-        # Convert book IDs to Book objects
-        recommendations = [Book(book_id=book_id) for book_id in book_ids]
-
-        # Cache the results
-        cache_repo.set_user_recommendation(user_id, recommendations)
-
+        recommendations, source = service.get_recommendations(user_id)
         return RecommendationsResponse(
-            user_id=user_id, recommendations=recommendations, source="computed"
+            user_id=user_id, recommendations=recommendations, source=source
         )
 
     except Exception as e:

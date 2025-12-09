@@ -7,6 +7,9 @@ class AppConfig(BaseSettings):
     postgres_db: str = "interactions"
     postgres_user: str = "postgres"
     postgres_password: str = "postgres"
+    redis_host: str = "localhost"
+    redis_port: int = 6379
+    redis_db: int = 0
     fastapi_host: str = "0.0.0.0"
     fastapi_port: int = 8000
     recommendation_service_url: str = "http://localhost:8001"
