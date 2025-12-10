@@ -78,35 +78,35 @@ Wybór ALS został dokonany ze względu na to, że takie podejście jest bardzo 
 
 # Stany serwisów
 ## Communication service
-### Done
+### Done:
 Wszystkie funkcjonalności serwisu są gotowe.
-### To do
+### To do:
 Wdrożenie serwisa na chmurze, łączenie z innymi wdrożonymi serwisami.
 
 ## Recommednation service
-### Done
+### Done:
 1. Potok tworzenia rekomendacji dla użytkownika.
 2. Obliczanie embeddings użytkownika na bieżąco.
-### To do
+### To do:
 1. Integracja z content-based modelem w celu umożliwienia rekomendacji podobnych książek.
 2. Integracja z modelem rankingowym (w tym momencie jest zamockowany)
 3. Implementacja re-rankingu
 4. Wdrożenie serwisa na chmurze, łączenie z innymi wdrożonymi serwisami.
 
 ## Background
-### Done
+### Done:
 1. Skrypt wypełniający automatyczne zapisywanie embeddings do wektorowej bazy danych.
 2. Skrypt wykonujący automatyczne obliczenie modelu ALS oraz zapisuje ten model.
-### To do
+### To do:
 1. Skrypt wykonujączy automatyczne trenowanie modelu rankingowego.
 2. Skrypt zbierający dane o interakcjach.
-3. Wdrożenie skryptów na chmure.
+3. Wdrożenie skryptów na chmurze.
 
 ## Modele
-### Done
+### Done:
 1. Model faktoryzacji macierzy
 2. Model content-based
-### To do
+### To do:
 1. Model rankingowy
 2. Ewaluacja modeli, dostasowanie parametrów  
 
