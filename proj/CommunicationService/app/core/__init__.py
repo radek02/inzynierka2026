@@ -1,4 +1,4 @@
 from .config import settings
-from .dependency_container import get_cache, get_db, get_settings
+from .dependency_container import get_cache, get_db, get_recommendation_client, get_settings
 
-__all__ = ["settings", "get_db", "get_cache"]
+__all__ = ["settings", "get_db", "get_cache", "get_recommendation_client", "get_settings"]

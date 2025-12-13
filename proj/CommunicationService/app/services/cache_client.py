@@ -1,17 +1,16 @@
 """Redis cache client"""
 
-import os
 from typing import Optional, cast
 
 import redis
 
 
 class CacheClient:
-    def __init__(self) -> None:
+    def __init__(self, host: str, port: int, db: int) -> None:
         self.client = redis.Redis(
-            host=os.getenv("REDIS_HOST", "localhost"),
-            port=int(os.getenv("REDIS_PORT", "6379")),
-            db=int(os.getenv("REDIS_DB", "0")),
+            host=host,
+            port=port,
+            db=db,
             decode_responses=True,
             socket_connect_timeout=5,
         )

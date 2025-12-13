@@ -1,6 +1,8 @@
-from pydantic import BaseModel
 from typing import List
 
-class UserRecmmendationResponse(BaseModel):
+from pydantic import BaseModel
+
+
+class UserRecommendationResponse(BaseModel):
     user_id: int
     recommended_books: List[int]

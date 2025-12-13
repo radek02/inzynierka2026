@@ -11,10 +11,14 @@ class RecommendationsRequest(BaseModel):
     user_id: int = Field(gt=0, description="User ID")
 
 
-class RecommendationsResponse(BaseModel):
+class Recommendation(BaseModel):
     user_id: int
-    recommendations: list[Book]
-    source: str # cache vs computed
+    books: list[Book]
+    source: str  # cache vs computed
+
+
+class RecommendationsResponse(BaseModel):
+    recommendation: Recommendation
 
 
 # Similar endpoint (GET)
@@ -28,6 +32,13 @@ class SimilarResponse(BaseModel):
 
 
 # Interactions endpoint (POST)
+class Interaction(BaseModel):
+    id: int
+    user_id: int
+    book_id: int
+    rating: int
+
+
 class InteractionsRequest(BaseModel):
     user_id: int = Field(gt=0, description="User ID")
     book_id: int = Field(gt=0, description="Book ID")
@@ -36,9 +47,7 @@ class InteractionsRequest(BaseModel):
 
 class InteractionsResponse(BaseModel):
     message: str
-    user_id: int
-    book_id: int
-    rating: int
+    interaction: Interaction
 
 
 # Error

@@ -1,6 +1,7 @@
-from models import Interaction
 from typing import List
-from db import IEmbeddingsStorage, IInteractionsRepository
+
+from app.db import IEmbeddingsStorage, IInteractionsRepository
+from app.models import Interaction
 
 class InteractionsService:
     def __init__(self, embeddings_repository: IEmbeddingsStorage, interactions_repository: IInteractionsRepository):
